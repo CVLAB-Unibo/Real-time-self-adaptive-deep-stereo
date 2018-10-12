@@ -1,0 +1,7 @@
+[
+	["up5/deconv", "up5/predict", "up5/up_predict", "up5/concat", "conv5", "conv5/1", "conv6", "conv6/1"],
+	["up4/deconv", "up4/predict", "up4/up_predict", "up4/concat", "conv4", "conv4/1"],
+	["up3/deconv", "up3/predict", "up3/up_predict", "up3/concat", "conv3", "conv3/1", "conv_redir"],
+	["up2/deconv", "up2/predict", "up2/up_predict", "up2/concat", "conv2a"],
+	["up1/deconv", "up1/predict", "up1/up_predict", "up1/concat", "conv1a"]
+] 
