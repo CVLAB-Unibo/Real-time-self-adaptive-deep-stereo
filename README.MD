@@ -1,11 +1,16 @@
 # Real-Time Self-Adaptive Deep Stereo
-Code for "Real-time self-adaptive deep stereo", if you use this code please cite 
+Code for "Real-time self-adaptive deep stereo".
 
+Paper available [here.](https://arxiv.org/abs/1810.05424)
+
+Video available [here.](https://www.youtube.com/watch?v=7SjyzDxmCY4)
+
+If you use this code please cite: 
 ```
-@InProcedings{
+@article{tonioni2018real
     title = {Real-time self-adaptive deep stereo},
-    author = {Tonioni, Alessio and Poggi, Matteo and Tosi, Fabio and Mattoccia, Stefano and Di Stefano, Luigi},
-    booktitle = {Under Review...}
+    author = {Tonioni, Alessio and Tosi, Fabio and Poggi, Matteo and Mattoccia, Stefano and Di Stefano, Luigi},
+    journal={arXiv preprint:1810.05424}
     month = {Oct},
     Years = {2018}    
 }
