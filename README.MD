@@ -53,7 +53,9 @@ python3 Stereo_Online_Adaptation.py \
     --weights ${WEIGHTS} \
     --modelName MADNet \
     --blockConfig ${BLOCKCONFIG} \
-    --mode MAD --sampleMode PROBABILITY 
+    --mode MAD \
+    --sampleMode PROBABILITY \
+    --logDispStep 1
 ```
 
 Additional details on available parameters:
@@ -63,6 +65,7 @@ Additional details on available parameters:
 + **--blockConfig**: path to a json file that specify how to subdivide the network into independent blocks for adaptation using MAD, some example are provided inside the `block_config` folder. Each innermost array inside the json file should correspond to layers belonging to the same independent group.
 + **--sampleMode**: specify how to sample portions of the network to train when using MAD. 
 + **--weights**: path to the initial weights for the network, e.g., referring to the weights linked above and assuming of having extracted the zip file in the same folder as the python script, to load MADNet trained on synthetic data use `--weights MADNet/synthetic/weights.ckpt`
++ **--logDispStep**: save the disparity predicted every this number of steps.
 
 ## Native Correlation layers
 
