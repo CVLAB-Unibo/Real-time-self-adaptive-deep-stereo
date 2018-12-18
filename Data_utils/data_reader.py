@@ -125,17 +125,7 @@ class dataset():
 
         self._build_input_pipeline()
     
-    def _build_input_pipeline(self):
-        left_files, right_files, gt_files, _ = read_list_file(self._path_file)
-        self._couples = [[l, r, gt] for l, r, gt in zip(left_files, right_files, gt_files)]
-        #flags 
-        self._usePfm = gt_files[0].endswith('pfm') or gt_files[0].endswith('PFM')
-        if not self._usePfm:
-            gg = cv2.imread(gt_files[0],-1)
-            self._double_prec_gt = (gg.dtype == np.uint16)
-
-        input_queue = tf.train.input_producer(self._couples, num_epochs=self._num_epochs,shuffle=self._shuffle)
-        files = input_queue.dequeue()
+    def _load_image(self, files):
         left_file_name = files[0]
         right_file_name = files[1]
         gt_file_name = files[2]
@@ -161,9 +151,34 @@ class dataset():
         
         if self._augment:
             left_image,right_image=preprocessing.augment(left_image,right_image)
+        return [left_image,right_image,gt_image]
+    
+    def _build_input_pipeline(self):
+        left_files, right_files, gt_files, _ = read_list_file(self._path_file)
+        self._couples = [[l, r, gt] for l, r, gt in zip(left_files, right_files, gt_files)]
+        #flags 
+        self._usePfm = gt_files[0].endswith('pfm') or gt_files[0].endswith('PFM')
+        if not self._usePfm:
+            gg = cv2.imread(gt_files[0],-1)
+            self._double_prec_gt = (gg.dtype == np.uint16)
+
+        #create dataset
+        dataset = tf.data.Dataset.from_tensor_slices(self._couples).repeat(self._num_epochs)
+        if self._shuffle:
+            dataset = dataset.shuffle(self._batch_size*50)
         
-        tt = 4 if self._shuffle else 1
-        self._left_batch, self._right_batch, self._gt_batch = tf.train.batch([left_image, right_image, gt_image], self._batch_size, capacity=self._batch_size*20, num_threads=tt)
+        #load images
+        dataset = dataset.map(self._load_image)
+
+        #transform data
+        dataset = dataset.batch(self._batch_size, drop_remainder=True)
+
+        #get iterator and batches
+        iterator = dataset.make_one_shot_iterator()
+        images = iterator.get_next()
+        self._left_batch = images[0]
+        self._right_batch = images[1]
+        self._gt_batch = images[2]
 
     ################# PUBLIC METHOD #######################
 

@@ -146,10 +146,6 @@ def main(args):
 		#init stuff
 		sess.run([tf.global_variables_initializer(),tf.local_variables_initializer()])
 
-		#start queue runners
-		coord = tf.train.Coordinator()
-		tf.train.start_queue_runners(sess=sess,coord=coord)
-
 		#restore disparity inference weights
 		var_to_restore = weights_utils.get_var_to_restore_list(args.weights, [])
 		assert(len(var_to_restore)>0)
@@ -180,6 +176,7 @@ def main(args):
 		try:	
 			start_time = time.time()
 			while True:
+
 				#fetch new network portion to train
 				if step%args.sampleFrequency==0 and args.mode=='MAD':
 					#Sample 
@@ -254,9 +251,8 @@ def main(args):
 
 				step+=1
 
-		except Exception as e:
-			print('Exception catched {}'.format(e))
-			#raise(e)
+		except tf.errors.OutOfRangeError:
+			pass
 		finally:
 			epe_array = epe_accumulator
 			bad3_array = bad3_accumulator
@@ -290,9 +286,9 @@ def main(args):
 				for i,(t,e,b) in enumerate(zip(time_array,epe_array,bad3_array)):
 					f_out.write('{},{},{},{}\n'.format(i,t,e,b))
 			
+			print('Result saved in {}'.format(args.output))
+			
 			print('All Done, Bye Bye!')
-			coord.request_stop()
-			coord.join()
 
 if __name__=='__main__':
 	parser=argparse.ArgumentParser(description='Script for online Adaptation of a Deep Stereo Network')
