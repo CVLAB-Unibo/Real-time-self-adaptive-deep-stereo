@@ -172,6 +172,7 @@ class dataset():
 
         #transform data
         dataset = dataset.batch(self._batch_size, drop_remainder=True)
+        dataset = dataset.prefetch(buffer_size=30)
 
         #get iterator and batches
         iterator = dataset.make_one_shot_iterator()
