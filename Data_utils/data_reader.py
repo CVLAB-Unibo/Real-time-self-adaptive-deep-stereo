@@ -106,8 +106,8 @@ class dataset():
         self,
         path_file,
         batch_size=4,
-        crop_shape=[300,700],
-        num_epochs=1,
+        crop_shape=[320,1216],
+        num_epochs=None,
         augment=False,
         is_training=True,
         shuffle=True):
@@ -183,11 +183,14 @@ class dataset():
 
     ################# PUBLIC METHOD #######################
 
+    def __len__(self):
+        return len(self._couples)
+    
+    def get_max_steps(self):
+        return (len(self)*self._num_epochs)//self._batch_size
+
     def get_batch(self):
         return self._left_batch,self._right_batch,self._gt_batch
-    
-    def get_size(self):
-        return len(self._couples)
     
     def get_couples(self):
         return self._couples

@@ -172,7 +172,7 @@ def main(args):
 		last_trained_blocks = []
 		reset_counter=0
 		step=0
-		max_steps=data_set.get_size()
+		max_steps=data_set.get_max_steps()
 		try:	
 			start_time = time.time()
 			while True:
