@@ -1,9 +1,14 @@
 # Real-Time Self-Adaptive Deep Stereo
-Code for "Real-time self-adaptive deep stereo".
+Code for [Real-time self-adaptive deep stereo](https://arxiv.org/abs/1810.05424).
 
-Paper available [here.](https://arxiv.org/abs/1810.05424)
+| [paper](https://arxiv.org/abs/1810.05424) | [video](https://www.youtube.com/watch?v=7SjyzDxmCY4) |
 
-Video available [here.](https://www.youtube.com/watch?v=7SjyzDxmCY4)
+![image](images/MADNet.png)
+
+**Abstract**:
+
+Deep convolutional neural networks trained end-to-end are the undisputed state-of-the-art methods to regress dense disparity maps directly from stereo pairs. However, such methods suffer from notable accuracy drops when exposed to scenarios significantly different from those seen in the training phase (e.g.real vs synthetic images, indoor vs outdoor, etc). As it is unlikely to be able to gather enough samples to achieve effective training/ tuning in any target domain, we propose to perform unsupervised and continuous online adaptation of a deep stereo network in order to preserve its accuracy independently of the sensed environment. However, such a strategy can be extremely demanding regarding computational resources and thus not enabling real-time performance. Therefore, we address this side effect by introducing a new lightweight, yet effective, deep stereo architecture Modularly ADaptive Network (MADNet) and by developing Modular ADaptation (MAD), an algorithm to train independently only sub-portions of our model. By deploying MADNet together with MAD we propose the first ever realtime self-adaptive deep stereo system.
+
 
 If you use this code please cite: 
 ```
