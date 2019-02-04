@@ -66,7 +66,9 @@ class MadNet(Stereo_net.StereoNet):
             self._right_input_batch, 64)
     
     def _make_disp(self,op,scale):
-        return tf.nn.relu(-op*20/scale)
+        op = tf.image.resize_images(tf.nn.relu(op * -20), [self._left_input_batch.get_shape()[1].value, self._left_input_batch.get_shape()[2].value]) 
+        op = tf.image.resize_image_with_crop_or_pad(op, self._restore_shape[0], self._restore_shape[1])
+        return op
 
     def _stereo_estimator(self, costs, upsampled_disp=None, scope='fgc-volume-filtering'):
         activation = self._leaky_relu()
