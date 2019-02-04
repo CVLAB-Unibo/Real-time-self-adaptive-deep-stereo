@@ -59,7 +59,7 @@ class sequential_sampler(meta_sampler):
 		self._sample_counter=0
 	
 	def sample(self,distribution):
-		base_block = self._sample_counte%self._blocks_to_fetch
+		base_block = self._sample_counter%distribution.shape[0]
 		result = [(base_block+i)%distribution.shape[0] for i in range(self._blocks_to_fetch)]
 		self._sample_counter+=1
 		return result
