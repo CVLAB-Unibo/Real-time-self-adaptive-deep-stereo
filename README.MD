@@ -1,5 +1,5 @@
 # Real-Time Self-Adaptive Deep Stereo
-Code for [Real-time self-adaptive deep stereo](https://arxiv.org/abs/1810.05424).
+Code for [Real-time self-adaptive deep stereo](https://arxiv.org/abs/1810.05424), accepted as **ORAL** at **CVPR 2019**.
 
 | [paper](https://arxiv.org/abs/1810.05424) | [video](https://www.youtube.com/watch?v=7SjyzDxmCY4) |
 
@@ -12,12 +12,12 @@ Deep convolutional neural networks trained end-to-end are the undisputed state-o
 
 If you use this code please cite: 
 ```
-@article{tonioni2018real
-    title = {Real-time self-adaptive deep stereo},
+@InProceedings{Tonioni_2019_CVPR,
     author = {Tonioni, Alessio and Tosi, Fabio and Poggi, Matteo and Mattoccia, Stefano and Di Stefano, Luigi},
-    journal={arXiv preprint:1810.05424}
-    month = {Oct},
-    Years = {2018}    
+    title = {Real-time self-adaptive deep stereo},
+    booktitle = {The IEEE Conference on Computer Vision and Pattern Recognition (CVPR)},
+    month = {June},
+    year = {2019}    
 }
 ```
 
