@@ -31,7 +31,7 @@ pip3 install -r requirements.txt
 ## Pretrained Weights for Network
 Pretrained weights for both DispNet and MADNet available [here](https://drive.google.com/open?id=1GwGxBOFx-NlUo9RAUgPlgPvaHCpGedlm).
 
-## Online Adaptation Step by step
+## Online Adaptation Step by step on Video Sequences
 
 1. Create a csv file for your video sequence similar to `example_list.csv`. 
    
@@ -71,6 +71,18 @@ Additional details on available parameters:
 + **--sampleMode**: specify how to sample portions of the network to train when using MAD. 
 + **--weights**: path to the initial weights for the network, e.g., referring to the weights linked above and assuming of having extracted the zip file in the same folder as the python script, to load MADNet trained on synthetic data use `--weights MADNet/synthetic/weights.ckpt`
 + **--logDispStep**: save the disparity predicted every this number of steps.
+
+
+## Live inference and adaptation demo
+The Demo sub-folder contains python code to run stereo online inference and/or adaptation from a webcam stream. Before running the demo you should implement in `Demo/grabber.py` a class that extends `ImageGrabber` and is tagged with the `@register_camera_to_factory()` decorator. The class should handle connection and disconnection from your stereo camera as well as all the op necessary to read/decode and rectify stereo frames. The file `grabber.py` contains a commented `SmattCam` class  showing an example of implementation for a custom stereo camera implemented on an FPGA.
+
+Once you have implemented the code to connect to your camera you should be able to run the demo using the `Demo/Live_Adaptation_Demo.py` script. The script accepts a bunch of parameters from command line to choose between inference/adaptation and the stereo model to load, all the options can be listed using
+
+```python
+python Live_Detection_Demo.py -h
+```
+
+Once started the script spawn two threads, one to read frames from the camera the others to process them through a stereo CNN. To stop execution just press something followed by `enter` on the shell where `Live_DEtection_Demo.py` is running.
 
 ## Native Correlation layers
 
