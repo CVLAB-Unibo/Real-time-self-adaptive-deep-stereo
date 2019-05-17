@@ -1,2 +1,8 @@
 .vscode
 */__pycache__/*
+*.pyc 
+*.so
+*.sh
+*.json
+Demo/*/*
+*.txt
