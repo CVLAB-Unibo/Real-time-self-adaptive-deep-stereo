@@ -36,8 +36,9 @@ class DispNet(Stereo_net.StereoNet):
             args['correlation'] = True
         return args
 
-    def _make_disp(self,op,scale):
-        op = tf.image.resize_images(tf.nn.relu(op * scale), [self._left_input_batch.get_shape()[1].value, self._left_input_batch.get_shape()[2].value])
+    def _make_disp(self,op):
+        scale = self._left_input_batch.get_shape()[2].value/op.get_shape()[2].value
+        op = tf.image.resize_images(tf.nn.relu(op*scale), [self._left_input_batch.get_shape()[1].value, self._left_input_batch.get_shape()[2].value])
         op = tf.image.resize_image_with_crop_or_pad(op, self._restore_shape[0], self._restore_shape[1])
         return op
 
@@ -140,7 +141,7 @@ class DispNet(Stereo_net.StereoNet):
 
         self._add_to_layers('prediction', sharedLayers.conv2d(self._get_layer_as_input(
             'up1/concat'), [3, 3, 32, 1], strides=1, activation=lambda x: x, name='prediction'))
-        self._disparities.append(self._make_disp(self._layers['prediction'],2))
+        self._disparities.append(self._make_disp(self._layers['prediction']))
 
          ############ LOOK BELOW IF DISPNET GIVES WRONG RESULTS #########################
         # rescaled_prediction = -preprocessing.rescale_image(self._layers['prediction'], tf.shape(self._left_input_batch)[1:3])

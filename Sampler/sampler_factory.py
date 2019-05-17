@@ -34,7 +34,7 @@ class fixed_sampler(meta_sampler):
 		self._fixed_id = fixed_id
 	
 	def sample(self,distribution):
-		return self._fixed_id
+		return [self._fixed_id]
 
 class random_sampler(meta_sampler):
 	"""

@@ -359,7 +359,7 @@ class MadNet(Stereo_net.StereoNet):
             self._add_to_layers('final_disp', V2)
             self._disparities.append(real_disp_v2)
 
-        rescaled_prediction = tf.image.resize_images(self._get_layer_as_input('final_disp'), [image_height, image_width]) * -20.
+        rescaled_prediction = tf.nn.relu(tf.image.resize_images(self._get_layer_as_input('final_disp'), [image_height, image_width]) * -20.)
         self._layers['rescaled_prediction'] = tf.image.resize_image_with_crop_or_pad(rescaled_prediction, self._restore_shape[0], self._restore_shape[1])
         self._disparities.append(self._layers['rescaled_prediction'])
     
