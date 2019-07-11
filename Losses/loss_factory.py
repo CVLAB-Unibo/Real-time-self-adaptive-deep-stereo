@@ -282,7 +282,7 @@ def get_supervised_loss(name, multiScale=False, logs=False, weights=None, reduce
 			disp_to_test=len(disparities)
 		else:
 			disp_to_test=1
-		valid_map = tf.where(tf.logical_and(tf.equal(targets, 0), tf.less_equal(targets,max_disp)), tf.zeros_like(targets, dtype=tf.float32), tf.ones_like(targets, dtype=tf.float32))
+		valid_map = tf.where(tf.logical_or(tf.equal(targets, 0), tf.greater_equal(targets,max_disp)), tf.zeros_like(targets, dtype=tf.float32), tf.ones_like(targets, dtype=tf.float32))
 		
 		for i in range(0,disp_to_test):
 			#upsample prediction
