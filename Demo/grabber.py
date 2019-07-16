@@ -92,6 +92,43 @@ class ImageGrabber(threading.Thread):
 
 
 #########################################################################
+#################           ZED MINI                    #################
+#########################################################################
+
+import pyzed.sl as sl
+
+@register_camera_to_factory()
+class ZEDMini(ImageGrabber):
+    _name = 'ZED_Mini'
+
+    """ Read Stereo frames from a ZED Mini stereo camera. """
+    def _read_frame(self):
+        err = self._cam.grab(self._runtime)
+        if err == sl.ERROR_CODE.SUCCESS:
+            self._cam.retrieve_image(self._left_frame, sl.VIEW.VIEW_LEFT)
+            self._cam.retrieve_image(self._right_frame, sl.VIEW.VIEW_RIGHT)
+            return self._left_frame.get_data()[:,:,:3], self._right_frame.get_data()[:,:,:3]
+    
+    def _connect_to_camera(self):
+        self._params = sl.InitParameters()
+        self._params.camera_resolution = sl.RESOLUTION.RESOLUTION_HD720
+        self._params.camera_fps = 60
+        self._cam = sl.Camera()
+        status = self._cam.open(self._params)
+        if status != sl.ERROR_CODE.SUCCESS:
+            print(status)
+            raise Exception('Unable to connect to Stereo Camera')
+        self._runtime = sl.RuntimeParameters()
+        self._left_frame = sl.Mat()
+        self._right_frame = sl.Mat()
+
+    def _disconnect_from_camera(self):
+        self._cam.close()        
+
+
+
+
+#########################################################################
 #################           SMATT CAM                   #################
 #########################################################################
 

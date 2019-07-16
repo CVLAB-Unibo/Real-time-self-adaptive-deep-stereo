@@ -59,7 +59,7 @@ class RealTimeStereo(threading.Thread):
         self._crop_shape = crop_shape
         self._SSIMTh = SSIMTh
         self._mode = mode 
-        self._stop = False
+        self._stop_flag = False
         self._ready = self._setup_graph()
         self._ready &= self._initialize_model()
         threading.Thread.__init__(self)
@@ -71,15 +71,19 @@ class RealTimeStereo(threading.Thread):
 
     def _build_input_ops(self):
         #input placeholder ops
-        self._left_placeholder = tf.placeholder(tf.float32,shape=[1,self._image_shape[0],self._image_shape[1],3], name='left_input')
-        self._right_placeholder = tf.placeholder(tf.float32,shape=[1,self._image_shape[0],self._image_shape[1],3], name='right_input')
+        self._left_placeholder = tf.placeholder(tf.float32,shape=[1,None, None,3], name='left_input')
+        self._right_placeholder = tf.placeholder(tf.float32,shape=[1,None, None,3], name='right_input')
 
+        self._left_input = self._left_placeholder
+        self._right_input = self._right_placeholder
+        
+        if self._image_shape[0] is not None:
+            self._left_input = preprocessing.rescale_image(self._left_input, self._image_shape)
+            self._right_input = preprocessing.rescale_image(self._right_input, self._image_shape)
+        
         if self._crop_shape[0] is not None:
-            self._left_input = tf.image.resize_image_with_crop_or_pad(self._left_placeholder, self._crop_shape[0], self._crop_shape[1])
-            self._right_input = tf.image.resize_image_with_crop_or_pad(self._right_placeholder, self._crop_shape[0], self._crop_shape[1])
-        else:
-            self._left_input = self._left_placeholder
-            self._right_input = self._right_placeholder
+            self._left_input = tf.image.resize_image_with_crop_or_pad(self._left_input, self._crop_shape[0], self._crop_shape[1])
+            self._right_input = tf.image.resize_image_with_crop_or_pad(self._right_input, self._crop_shape[0], self._crop_shape[1])
 
     def _build_network(self):
         #network model
@@ -182,7 +186,8 @@ class RealTimeStereo(threading.Thread):
         Create tensorflow session and initialize the network
         """
         #session
-        self._session = tf.Session()
+        gpu_options = tf.GPUOptions(allow_growth=True)
+        self._session = tf.Session(config=tf.ConfigProto(gpu_options=gpu_options))
 
         #variable initialization
         initializers = [tf.global_variables_initializer(),tf.local_variables_initializer()]
@@ -223,13 +228,13 @@ class RealTimeStereo(threading.Thread):
         """
         Stop the prediciton and kill the thread
         """
-        self._stop =True
+        self._stop_flag =True
 
     def run(self):
         self._setup_gui()
         first=True
         it=0
-        while not self._stop:
+        while not self._stop_flag:
             #fetch frames
             frames = self._camera_buffer.get(block=True)
             left_frame = frames[:1]
