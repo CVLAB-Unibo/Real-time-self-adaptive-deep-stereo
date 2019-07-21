@@ -2,6 +2,7 @@ import threading
 import time
 import numpy as np
 import abc
+import json
 
 ############################################################
 ###########          CAMERA FACTORY              ###########
@@ -100,6 +101,12 @@ import pyzed.sl as sl
 @register_camera_to_factory()
 class ZEDMini(ImageGrabber):
     _name = 'ZED_Mini'
+    _key_to_res = {
+        '2K' : sl.RESOLUTION.RESOLUTION_HD2K,
+        '1080p' : sl.RESOLUTION.RESOLUTION_HD1080,
+        '720p' : sl.RESOLUTION.RESOLUTION_HD720,
+        'VGA' : sl.RESOLUTION.RESOLUTION_VGA
+    }
 
     """ Read Stereo frames from a ZED Mini stereo camera. """
     def _read_frame(self):
@@ -110,9 +117,22 @@ class ZEDMini(ImageGrabber):
             return self._left_frame.get_data()[:,:,:3], self._right_frame.get_data()[:,:,:3]
     
     def _connect_to_camera(self):
+        # road option from config file
+        with open(self._config) as f_in:
+            self._config = json.load(f_in)
+
         self._params = sl.InitParameters()
-        self._params.camera_resolution = sl.RESOLUTION.RESOLUTION_HD720
-        self._params.camera_fps = 60
+        
+        if 'resolution' in self._config:
+            self._params.camera_resolution = self._key_to_res[self._config['resolution']]
+        else:
+            self._params.camera_resolution = sl.RESOLUTION.RESOLUTION_HD720
+        
+        if 'fps' in self._config:
+            self._params.camera_fps = self._config['fps']
+        else:
+            self._params.camera_fps = 30
+        
         self._cam = sl.Camera()
         status = self._cam.open(self._params)
         if status != sl.ERROR_CODE.SUCCESS:
@@ -124,8 +144,6 @@ class ZEDMini(ImageGrabber):
 
     def _disconnect_from_camera(self):
         self._cam.close()        
-
-
 
 
 #########################################################################
