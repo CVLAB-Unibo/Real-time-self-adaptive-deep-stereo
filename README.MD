@@ -74,15 +74,15 @@ Additional details on available parameters:
 
 
 ## Live inference and adaptation demo
-The Demo sub-folder contains python code to run stereo online inference and/or adaptation from a webcam stream. Before running the demo you should implement in `Demo/grabber.py` a class that extends `ImageGrabber` and is tagged with the `@register_camera_to_factory()` decorator. The class should handle connection and disconnection from your stereo camera as well as all the op necessary to read/decode and rectify stereo frames. The file `grabber.py` contains a commented `SmattCam` class  showing an example of implementation for a custom stereo camera implemented on an FPGA.
+The Demo sub-folder contains python code to run stereo online inference and/or adaptation from a webcam stream. Before running the demo you should implement in `Demo/grabber.py` a class that extends `ImageGrabber` and is tagged with the `@register_camera_to_factory()` decorator. The class should handle connection and disconnection from your stereo camera as well as all the op necessary to read/decode and rectify stereo frames. The file `grabber.py` contains: a commented `SmattCam` class  with an implementation for a custom stereo camera implemented on an FPGA and a `ZEDMini` class to connect to a ZED stereo camera.
 
-Once you have implemented the code to connect to your camera you should be able to run the demo using the `Demo/Live_Adaptation_Demo.py` script. The script accepts a bunch of parameters from command line to choose between inference/adaptation and the stereo model to load, all the options can be listed using
+Once you have implemented the code to connect to your camera you should be able to run the demo using the `Demo/Live_Adaptation_Demo.py` script. The script accepts a bunch of parameters from the command line to, all the options can be listed using
 
 ```python
 python Live_Detection_Demo.py -h
 ```
 
-Once started the script spawn two threads, one to read frames from the camera the others to process them through a stereo CNN. To stop execution just press something followed by `enter` on the shell where `Live_DEtection_Demo.py` is running.
+Once started the script spawn two threads, one to read frames from the camera the others to process them through a stereo CNN. To stop execution just press something followed by `enter` on the shell where `Live_Detection_Demo.py` is running.
 
 ## Native Correlation layers
 
