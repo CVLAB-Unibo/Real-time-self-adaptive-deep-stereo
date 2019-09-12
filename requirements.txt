@@ -1,3 +1,4 @@
-tensorflow-gpu
+tensorflow-gpu==1.12
+numpy==1.16
 matplotlib
-opencv-python
+opencv-python=4.1.1.26
