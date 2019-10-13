@@ -331,7 +331,7 @@ def get_reprojection_loss(reconstruction_loss,multiScale=False, logs=False, weig
 		for i in range(disp_to_test):
 			#rescale prediction to full resolution
 			current_disp = disparities[-(i+1)]
-			disparity_scale_factor = tf.cast(tf.shape(current_disp)[2],tf.float32)/tf.cast(tf.shape(left)[2],tf.float32)
+			disparity_scale_factor = tf.cast(tf.shape(left)[2],tf.float32)/tf.cast(tf.shape(current_disp)[2],tf.float32)
 			resized_disp = preprocessing.resize_to_prediction(current_disp, left) * disparity_scale_factor
 
 			reprojected_left = preprocessing.warp_image(right, resized_disp)
