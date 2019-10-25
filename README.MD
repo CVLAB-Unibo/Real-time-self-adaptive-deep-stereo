@@ -1,7 +1,7 @@
 # Real-Time Self-Adaptive Deep Stereo
 Code for [Real-time self-adaptive deep stereo](https://arxiv.org/abs/1810.05424), accepted as **ORAL** at **CVPR 2019**.
 
-| [paper](https://arxiv.org/abs/1810.05424) | [video](https://www.youtube.com/watch?v=7SjyzDxmCY4) |
+| [paper](https://arxiv.org/abs/1810.05424) | [video](https://www.youtube.com/watch?v=7SjyzDxmCY4) | [CVPR_Live_Demo](https://www.youtube.com/watch?v=4O-7OzVYAeU) |
 
 ![image](images/MADNet.png)
 
