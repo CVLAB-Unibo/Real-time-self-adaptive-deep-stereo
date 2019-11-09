@@ -95,7 +95,8 @@ def main(args):
 		disparity_trainer = tf.train.AdamOptimizer(args.lr,0.9)
 		
 		#l1 regression loss for each scale mutiplied by the corresponding weight
-		assert(len(args.lossWeights)==len(predictions))
+		if args.lossWeights is not None and len(args.lossWeights)==len(predictions):
+			raise ValueError('Wrong number of loss weights provide, should provide {}'.format(len(predictions)))
 		full_reconstruction_loss = loss_factory.get_supervised_loss(args.lossType,multiScale=True,logs=False,weights=args.lossWeights,max_disp=MAX_DISP)(predictions,inputs)
 
 		train_op = disparity_trainer.minimize(full_reconstruction_loss,global_step=global_step)
@@ -166,7 +167,7 @@ if __name__=='__main__':
 	parser.add_argument("--weights",help="path to the initial weights for the disparity estimation network (OPTIONAL)")
 	parser.add_argument("--modelName", help="name of the stereo model to be used", default="Dispnet", choices=Nets.STEREO_FACTORY.keys())
 	parser.add_argument("--lr", help="initial value for learning rate",default=0.0001, type=float)
-	parser.add_argument("--imageShape", help='two int for image shape [height,width]', nargs='+', type=int, default=[320,1216])
+	parser.add_argument("--imageShape", help='two int for the size of the crop extracted from each image [height,width]', nargs='+', type=int, default=[320,1216])
 	parser.add_argument("--batchSize", help='batch size to use during training',type=int,default=4)
 	parser.add_argument("--numEpochs", help='number of training epochs',type=int,default=50)
 	parser.add_argument("--augment", help="flag to enable data augmentation", action='store_true')

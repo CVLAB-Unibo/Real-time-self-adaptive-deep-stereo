@@ -35,6 +35,8 @@ def random_crop(crop_shape, tensor_list):
 	image_shape = tf.shape(tensor_list[0])
 	max_row = image_shape[0]-crop_shape[0]-1
 	max_col = image_shape[1]-crop_shape[1]-1
+	max_row = tf.cond(max_row>0, lambda: max_row, lambda: 1)
+	max_col = tf.cond(max_col>0, lambda: max_col, lambda: 1)
 	start_row = tf.random_uniform([],minval=0,maxval=max_row,dtype=tf.int32)
 	start_col = tf.random_uniform([],minval=0,maxval=max_col,dtype=tf.int32)
 	result=[]

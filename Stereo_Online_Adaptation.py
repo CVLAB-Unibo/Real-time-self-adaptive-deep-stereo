@@ -303,7 +303,7 @@ if __name__=='__main__':
 	parser.add_argument("--fixedID",help="index of the portions of network to train, used only if sampleMode=FIXED",type=int,nargs='+',default=[0])
 	parser.add_argument("--reprojectionScale",help="compute all loss function at 1/reprojectionScale",default=1,type=int)
 	parser.add_argument("--summary",help='flag to enable tensorboard summaries',action='store_true')
-	parser.add_argument("--imageShape", help='two int for image shape [height,width]', nargs='+', type=int, default=[320,1216])
+	parser.add_argument("--imageShape", help='two int for the size of the crop extracted from each image [height,width]', nargs='+', type=int, default=[320,1216])
 	parser.add_argument("--SSIMTh",help="reset network to initial configuration if loss is above this value",type=float,default=0.5)
 	parser.add_argument("--sampleFrequency",help="sample new network portions to train every K frame",type=int,default=1)
 	parser.add_argument("--mode",help="online adaptation mode: NONE - perform only inference, FULL - full online backprop, MAD - backprop only on portions of the network", choices=['NONE','FULL','MAD'], default='MAD')
