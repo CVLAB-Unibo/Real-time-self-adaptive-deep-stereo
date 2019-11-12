@@ -246,8 +246,9 @@ def main(args):
 				#save disparity if requested
 				if args.logDispStep!=-1 and step%args.logDispStep==0:
 					dispy=fetches[-1]
-					dispy_to_save = np.clip(dispy[0].astype(np.uint16), 0, MAX_DISP)
-					cv2.imwrite(os.path.join(args.output, 'disparities/disparity_{}.png'.format(step)), dispy_to_save*256)
+					dispy_to_save = np.clip(dispy[0], 0, MAX_DISP)
+					dispy_to_save = (dispy_to_save*256.0).astype(np.uint16)
+					cv2.imwrite(os.path.join(args.output, 'disparities/disparity_{}.png'.format(step)), dispy_to_save)
 
 				step+=1
 
