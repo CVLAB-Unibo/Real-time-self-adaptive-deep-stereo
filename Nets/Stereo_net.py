@@ -28,7 +28,7 @@ class StereoNet(object):
         self._disparities = []
         self._placeholders = []
         self._placeholderable = []
-        self._trainable_variables = OrderedDict() #Porcata per avere un ordered set...
+        self._trainable_variables = OrderedDict() 
         self._layer_to_var = {}
         self._after_split = False
         print('=' * 50)
