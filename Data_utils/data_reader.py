@@ -62,7 +62,7 @@ def read_list_file(path_file):
     """
     with open(path_file,'r') as f_in:
         lines = f_in.readlines()
-    lines = [x for x in lines if not x.strip()[0] == '#']
+    lines = [x for x in lines if not (x.strip() == '' or x.strip()[0] == '#')]
     left_file_list = []
     right_file_list = []
     gt_file_list = []
@@ -129,8 +129,8 @@ class dataset():
         left_file_name = files[0]
         right_file_name = files[1]
         gt_file_name = files[2]
-        left_image = read_image_from_disc(left_file_name)
-        right_image = read_image_from_disc(right_file_name)
+        left_image = read_image_from_disc(left_file_name)[:,:,:3]
+        right_image = read_image_from_disc(right_file_name)[:,:,:3]
         if self._usePfm:
             gt_image = tf.py_func(lambda x: readPFM(x)[0], [gt_file_name], tf.float32)
             gt_image.set_shape([None,None,1])
