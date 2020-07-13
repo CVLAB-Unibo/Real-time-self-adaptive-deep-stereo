@@ -1,5 +1,5 @@
 # Real-Time Self-Adaptive Deep Stereo
-**Extended version just uploaded to arxive: [Link](https://arxiv.org/pdf/2007.05233.pdf), code will be released soon**
+**Extended version just uploaded to arxive: [Link](https://arxiv.org/pdf/2007.05233.pdf). Code for the extended version will be released soon.**
 
 Code for [Real-time self-adaptive deep stereo](https://arxiv.org/abs/1810.05424), accepted as **ORAL** at **CVPR 2019**.
 
