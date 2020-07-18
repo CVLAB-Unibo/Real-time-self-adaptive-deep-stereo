@@ -62,8 +62,8 @@ class StereoNet(object):
 
         # extract variables
         scope = '/'.join(op.name.split('/')[0:-1])
-        variables = tf.get_collection(
-            tf.GraphKeys.TRAINABLE_VARIABLES, scope=scope) 
+        variables = tf.compat.v1.get_collection(
+            tf.compat.v1.GraphKeys.TRAINABLE_VARIABLES, scope=scope) 
         self._layer_to_var[name] = variables
 
         if not self._after_split:
