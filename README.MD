@@ -21,6 +21,15 @@ If you use this code please cite:
     month = {June},
     year = {2019}    
 }
+
+@article{Poggi2021continual,
+    author={Poggi, Matteo and Tonioni, Alessio and Tosi, Fabio
+            and Mattoccia, Stefano and Di Stefano, Luigi},
+    title={Continual Adaptation for Deep Stereo},
+    journal={IEEE Transactions on Pattern Analysis and Machine Intelligence (TPAMI)},
+    year={2021}
+}
+
 ```
 
 ## Requirements
