@@ -1,5 +1,5 @@
 # Real-Time Self-Adaptive Deep Stereo
-`UPDATE!` Code for [Continual Adaptation for Deep Stereo](https://arxiv.org/pdf/2007.05233.pdf), accepted to **TPAMI**, is now available! Check how to run it under `UPDATE!` tags
+💡 **UPDATE!** Code for [Continual Adaptation for Deep Stereo](https://arxiv.org/pdf/2007.05233.pdf), accepted to **TPAMI**, is now available! Details under the 💡 **UPDATE!** tags
 
 Code for [Real-time self-adaptive deep stereo](https://arxiv.org/abs/1810.05424), accepted as **ORAL** at **CVPR 2019**.
 
@@ -54,7 +54,7 @@ Pretrained weights for both DispNet and MADNet available [here](https://drive.go
 
     Ground truth data will only be used to compute the network performance not for the online adaptation.
     
-    `UPDATE!` To run the TPAMI code, the csv file should contain absolute path to proxy disparities as well:
+    💡 **UPDATE!** To run the TPAMI code, the csv file should contain absolute path to proxy disparities as well:
     
     "*path_to_left_rgb*,*path_to_right_rgb*,*path_to_groundtruth*,*path_to_proxies*"
 
@@ -79,7 +79,7 @@ python3 Stereo_Online_Adaptation.py \
     --sampleMode PROBABILITY \
     --logDispStep 1
 ```
-`UPDATE!` To run the TPAMI code, just use the `Stereo_Continual_Adaptation.py` script instead
+💡 **UPDATE!** To run the TPAMI code, just use the `Stereo_Continual_Adaptation.py` script instead
 
 Additional details on available parameters:
 
