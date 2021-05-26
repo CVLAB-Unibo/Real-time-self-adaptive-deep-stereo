@@ -1,9 +1,11 @@
 # Real-Time Self-Adaptive Deep Stereo
-**Extended version just uploaded to arxive: [Link](https://arxiv.org/pdf/2007.05233.pdf). Code for the extended version will be released soon.**
+**UPDATE!** Code for [Continual Adaptation for Deep Stereo](https://arxiv.org/pdf/2007.05233.pdf), accepted to TPAMI, is now available!
 
 Code for [Real-time self-adaptive deep stereo](https://arxiv.org/abs/1810.05424), accepted as **ORAL** at **CVPR 2019**.
 
-| [paper](https://arxiv.org/abs/1810.05424) | [video](https://www.youtube.com/watch?v=7SjyzDxmCY4) | [CVPR_Live_Demo](https://www.youtube.com/watch?v=4O-7OzVYAeU) |
+| [CVPR paper](https://arxiv.org/abs/1810.05424) | [CVPR video](https://www.youtube.com/watch?v=7SjyzDxmCY4) | [CVPR_Live_Demo](https://www.youtube.com/watch?v=4O-7OzVYAeU) |
+
+| [TPAMI paper](https://arxiv.org/pdf/2007.05233.pdf) | [TPAMI video](https://www.youtube.com/watch?v=YnPGbQE2dLQ) |
 
 ![image](images/MADNet.png)
 
@@ -51,6 +53,10 @@ Pretrained weights for both DispNet and MADNet available [here](https://drive.go
     "*path_to_left_rgb*,*path_to_right_rgb*,*path_to_groundtruth*"
 
     Ground truth data will only be used to compute the network performance not for the online adaptation.
+    
+    **UPDATE!** To run the TPAMI code, the csv file should contain absolute path to proxy disparities as well:
+    
+    "*path_to_left_rgb*,*path_to_right_rgb*,*path_to_groundtruth*,*path_to_proxies*"
 
 2. Download pretrained network from [here](https://drive.google.com/open?id=1GwGxBOFx-NlUo9RAUgPlgPvaHCpGedlm).
 3. Perform different kinds of online adaptation with `Stereo_Online_Adaptation.py`, to list all available options use  `python3 Stereo_Online_Adaptation.py -h`. 
@@ -73,6 +79,7 @@ python3 Stereo_Online_Adaptation.py \
     --sampleMode PROBABILITY \
     --logDispStep 1
 ```
+**UPDATE!** To run the TPAMI code, just use the `Stereo_Continual_Adaptation.py` script instead
 
 Additional details on available parameters:
 
