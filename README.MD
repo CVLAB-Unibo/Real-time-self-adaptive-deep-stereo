@@ -1,5 +1,5 @@
 # Real-Time Self-Adaptive Deep Stereo
-`UPDATE!` Code for [Continual Adaptation for Deep Stereo](https://arxiv.org/pdf/2007.05233.pdf), accepted to TPAMI, is now available! Check how to run it under `UPDATE!` tags
+`UPDATE!` Code for [Continual Adaptation for Deep Stereo](https://arxiv.org/pdf/2007.05233.pdf), accepted to **TPAMI**, is now available! Check how to run it under `UPDATE!` tags
 
 Code for [Real-time self-adaptive deep stereo](https://arxiv.org/abs/1810.05424), accepted as **ORAL** at **CVPR 2019**.
 
