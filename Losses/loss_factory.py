@@ -301,6 +301,55 @@ def get_supervised_loss(name, multiScale=False, logs=False, weights=None, reduce
 			return accumulator
 	return compute_loss
 
+def get_proxy_loss(name, multiScale=False, logs=False, weights=None, reduced=True, max_disp=None):
+	"""
+	Build a lambda op to be used to compute a loss function
+	Args:
+		name: name of the loss function to build
+		multiScale: if True compute multiple loss, one for each scale at which disparities are predicted
+		logs: if True enable tf summary
+		weights: array of weights to be multiplied for the losses at different resolution
+		reduced: if true return the sum of the loss across the different scales, false to return an array with the different losses
+		max_disp: if different from None clip max disparity to be this one
+	"""
+	if name not in ALL_LOSSES.keys():
+		print('Unrecognized loss function, pick one among: {}'.format(ALL_LOSSES.keys()))
+		raise Exception('Unknown loss function selected')
+	
+	base_loss_function = ALL_LOSSES[name]
+	if weights is None:
+		weights = [0.01]*10
+	if max_disp is None:
+		max_disp=1000
+	def compute_loss(disparities,inputs):
+		left = inputs['left']
+		right = inputs['right']
+		targets = inputs['target']
+		proxies = inputs['proxy']
+		accumulator=[]
+		if multiScale:
+			disp_to_test=len(disparities)
+		else:
+			disp_to_test=1
+		valid_map = tf.where(tf.logical_or(tf.less_equal(proxies, 0), tf.greater_equal(proxies,192)), tf.zeros_like(targets, dtype=tf.float32), tf.ones_like(targets, dtype=tf.float32))
+
+		for i in range(0,disp_to_test):
+			#upsample prediction
+			current_disp = disparities[-(i+1)]
+			disparity_scale_factor = tf.cast(tf.shape(left)[2],tf.float32)/tf.cast(tf.shape(current_disp)[2],tf.float32)
+			resized_disp = preprocessing.resize_to_prediction(current_disp,targets) * disparity_scale_factor
+
+			partial_loss = base_loss_function(resized_disp,proxies,valid_map)
+			#partial_loss = tf.Print(partial_loss,[disparity_scale_factor,tf.shape(valid_map),tf.reduce_sum(valid_map), tf.reduce_sum(valid_map*resized_disp)/tf.reduce_sum(valid_map), tf.reduce_sum(valid_map*targets)/tf.reduce_sum(valid_map)],summarize=10000)
+			if logs:
+				tf.summary.scalar('Loss_resolution_{}'.format(i),partial_loss)
+			accumulator.append(weights[i]*partial_loss)
+		if reduced:
+			return tf.reduce_sum(accumulator)
+		else:
+			return accumulator
+	return compute_loss
+
 def get_reprojection_loss(reconstruction_loss,multiScale=False, logs=False, weights=None,reduced=True):
 	"""
 	Build a lmbda op to be used to compute a loss function using reprojection between left and right frame
