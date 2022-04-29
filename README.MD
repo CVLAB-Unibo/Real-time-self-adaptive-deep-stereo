@@ -7,6 +7,8 @@ Code for [Real-time self-adaptive deep stereo](https://arxiv.org/abs/1810.05424)
 
 | [TPAMI paper](https://arxiv.org/pdf/2007.05233.pdf) | [TPAMI video](https://www.youtube.com/watch?v=YnPGbQE2dLQ) |
 
+| [ -Unofficial- Keras reimplementation by ChristianOrr](https://github.com/ChristianOrr/madnet-deep-stereo-with-keras) |
+
 ![image](images/MADNet.png)
 
 **Abstract**:
