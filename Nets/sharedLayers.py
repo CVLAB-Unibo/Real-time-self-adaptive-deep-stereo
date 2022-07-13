@@ -1,4 +1,5 @@
 import tensorflow as tf
+import tensorflow.keras as keras
 import os
 
 INITIALIZER_CONV = tf.contrib.layers.xavier_initializer()
@@ -29,7 +30,7 @@ def correlation(x,y,max_disp, name='corr', mode=MODE,stride=1):
 		return correlation_native(x,y,max_disp,name=name)
 
 def correlation_native(x, y, max_disp, name='corr'):
-	with tf.variable_scope(name):
+	with tf.compat.v1.variable_scope(name):
 		input_shape = x.get_shape().as_list()
 		x = tf.pad(x, [[0, 0], [0, 0], [max_disp, max_disp], [0, 0]], "CONSTANT")
 		y = tf.pad(y, [[0, 0], [0, 0], [max_disp, max_disp], [0, 0]], "CONSTANT")
@@ -39,7 +40,7 @@ def correlation_native(x, y, max_disp, name='corr'):
 		return corr
 
 def correlation_tf(x, y, max_disp, stride=1, name='corr'):
-	with tf.variable_scope(name):
+	with tf.compat.v1.variable_scope(name):
 		corr_tensors = []
 		y_shape = tf.shape(y)
 		y_feature = tf.pad(y,[[0,0],[0,0],[max_disp,max_disp],[0,0]])
@@ -51,20 +52,50 @@ def correlation_tf(x, y, max_disp, stride=1, name='corr'):
 		return result
 
 
-def conv2d(x, kernel_shape, strides=1, activation=lambda x: tf.maximum(0.1 * x, x), padding='SAME', name='conv', reuse=False, wName='weights', bName='bias', batch_norm=False, training=False):
-    with tf.variable_scope(name, reuse=reuse):
-        W = tf.get_variable(wName, kernel_shape, initializer=INITIALIZER_CONV)
-        b = tf.get_variable(bName, kernel_shape[3], initializer=INITIALIZER_BIAS)
-        x = tf.nn.conv2d(x, W, strides=[1, strides, strides, 1], padding=padding)
+def conv2d(x, kernel_shape, strides=1, activation=lambda x: tf.maximum(0.1 * x, x), padding='SAME', name='conv', reuse=False, wName='weights', bName='bias', batch_norm=False, apply_relu=True, dilation_rate=1, training=False):
+    with tf.compat.v1.variable_scope(name, reuse=reuse):
+        W = tf.compat.v1.get_variable(wName, kernel_shape, initializer=INITIALIZER_CONV)
+        b = tf.compat.v1.get_variable(bName, kernel_shape[3], initializer=INITIALIZER_BIAS)
+        x = tf.nn.conv2d(x, W, strides=[1, strides, strides, 1], padding=padding,dilations=dilation_rate)
         x = tf.nn.bias_add(x, b)
         if batch_norm:
-            x = tf.layers.batch_normalization(x,training=training,momentum=0.99)
-        x = activation(x)
+            bn = keras.layers.BatchNormalization()
+            x = bn(x,training=training)
+        if apply_relu:
+            x = activation(x)
+        return x
+
+def conv3d(x, kernel_shape, strides=1, activation=lambda x: tf.maximum(0.1 * x, x), padding='SAME', name='conv', reuse=False, wName='weights', bName='bias', batch_norm=False, apply_relu=True, training=False):
+    with tf.compat.v1.variable_scope(name,reuse=reuse):
+        W = tf.compat.v1.get_variable(wName, kernel_shape, initializer=INITIALIZER_CONV)
+        b = tf.compat.v1.get_variable(bName, kernel_shape[4], initializer=INITIALIZER_BIAS)
+        x = tf.nn.conv3d(x, W, strides=[1, strides, strides, strides, 1], padding=padding)
+        x = tf.nn.bias_add(x, b)
+        if batch_norm:
+            bn = keras.layers.BatchNormalization()
+            x = bn(x,training=training)
+        if apply_relu:
+            x = activation(x)
+        return x
+
+def conv3d_transpose(x, kernel_shape, strides=1, activation=lambda x: tf.maximum(0.1 * x, x), padding='SAME', name='conv', reuse=False, wName='weights', bName='bias', batch_norm=False, apply_relu=True, training=False):
+    with tf.compat.v1.variable_scope(name, reuse=reuse):
+        W = tf.compat.v1.get_variable(wName, kernel_shape, initializer=INITIALIZER_CONV)
+        b = tf.compat.v1.get_variable(bName, kernel_shape[3], initializer=INITIALIZER_BIAS)
+        x = tf.compat.v1.nn.conv3d_transpose(x, filter=W, output_shape=[x.get_shape()[0].value,\
+            x.get_shape()[1].value * strides,x.get_shape()[2].value * strides, x.get_shape()[3].value * strides,\
+            kernel_shape[3]],strides=[1, strides, strides, strides, 1], padding=padding)
+        x = tf.nn.bias_add(x, b)
+        if batch_norm:
+            bn = keras.layers.BatchNormalization()
+            x = bn(x,training=training)
+        if apply_relu:
+            x = activation(x)
         return x
 
 
 def dilated_conv2d(x, kernel_shape, rate=1, activation=lambda x: tf.maximum(0.1 * x, x), padding='SAME', name='dilated_conv', reuse=False, wName='weights', bName='biases',  batch_norm=False, training=False):
-    with tf.variable_scope(name, reuse=reuse):
+    with tf.compat.v1.variable_scope(name, reuse=reuse):
         weights = tf.get_variable(
             wName, kernel_shape, initializer=INITIALIZER_CONV)
         biases = tf.get_variable(
@@ -78,7 +109,7 @@ def dilated_conv2d(x, kernel_shape, rate=1, activation=lambda x: tf.maximum(0.1 
 
 
 def conv2d_transpose(x, kernel_shape, strides=1, activation=lambda x: tf.maximum(0.1 * x, x), name='conv', reuse=False, wName='weights', bName='bias',  batch_norm=False, training=False):
-    with tf.variable_scope(name, reuse=reuse):
+    with tf.compat.v1.variable_scope(name, reuse=reuse):
         W = tf.get_variable(wName, kernel_shape,initializer=INITIALIZER_CONV)
         tf.add_to_collection(tf.GraphKeys.WEIGHTS, W)
         b = tf.get_variable(bName, kernel_shape[2], initializer=INITIALIZER_BIAS)
@@ -88,11 +119,12 @@ def conv2d_transpose(x, kernel_shape, strides=1, activation=lambda x: tf.maximum
         x = tf.nn.bias_add(x, b)
         if batch_norm:
             x = tf.layers.batch_normalization(x,training=training,momentum=0.99)
-        x = activation(x)
+        if apply_relu:
+            x = activation(x)
         return x
 
 def depthwise_conv(x, kernel_shape, strides=1, activation=lambda x: tf.maximum(0.1 * x, x), padding='SAME', name='conv', reuse=False, wName='weights', bName='bias', batch_norm=False, training=False):
-    with tf.variable_scope(name, reuse=reuse):
+    with tf.compat.v1.variable_scope(name, reuse=reuse):
         w = tf.get_variable(wName, kernel_shape, initializer=INITIALIZER_CONV)
         b = tf.get_variable(bName, kernel_shape[3]*kernel_shape[2], initializer=INITIALIZER_BIAS)
         x = tf.nn.depthwise_conv2d(x, w, strides=[1, strides, strides, 1], padding=padding)
@@ -103,7 +135,7 @@ def depthwise_conv(x, kernel_shape, strides=1, activation=lambda x: tf.maximum(0
         return x
 
 def separable_conv2d(x, kernel_shape, channel_multiplier=1, strides=1, activation=lambda x: tf.maximum(0.1 * x, x), padding='SAME', name='conv', reuse=False, wName='weights', bName='bias', batch_norm=True, training=False):
-    with tf.variable_scope(name, reuse=reuse):
+    with tf.compat.v1.variable_scope(name, reuse=reuse):
         #detpthwise conv
         depthwise_conv_kernel = [kernel_shape[0],kernel_shape[1],kernel_shape[2],channel_multiplier]
         x = depthwise_conv(x,depthwise_conv_kernel,strides=strides,activation=lambda x: tf.maximum(0.1 * x, x),padding=padding,name='depthwise_conv',reuse=reuse,wName=wName,bName=bName,batch_norm=batch_norm, training=training)
@@ -115,7 +147,7 @@ def separable_conv2d(x, kernel_shape, channel_multiplier=1, strides=1, activatio
         return x
 
 def grouped_conv2d(x, kernel_shape, num_groups=1, strides=1, activation=lambda x: tf.maximum(0.1 * x, x), padding='SAME', name='conv', reuse=False, wName='weights', bName='bias', batch_norm=True, training=False):
-    with tf.variable_scope(name,reuse=reuse):
+    with tf.compat.v1.variable_scope(name,reuse=reuse):
         w = tf.get_variable(wName,shape=kernel_shape,initializer=INITIALIZER_CONV)
         b = tf.get_variable(bName, kernel_shape[3], initializer=INITIALIZER_BIAS)
 
@@ -131,7 +163,7 @@ def grouped_conv2d(x, kernel_shape, num_groups=1, strides=1, activation=lambda x
         return x
 
 def channel_shuffle_inside_group(x, num_groups, name='shuffle'):
-    with tf.variable_scope(name):
+    with tf.compat.v1.variable_scope(name):
         _, h, w, c = x.shape.as_list()
         x_reshaped = tf.reshape(x, [-1, h, w, num_groups, c // num_groups])
         x_transposed = tf.transpose(x_reshaped, [0, 1, 2, 4, 3])
